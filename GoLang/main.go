@@ -25,7 +25,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 var (
 	httpDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "myapp_http_duration_seconds",
+		Name: "golang_rest_duration",
 		Help: "Duration of HTTP requests.",
 	}, []string{"path"})
 )

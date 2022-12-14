@@ -4,7 +4,7 @@ import client from "prom-client";
 const app = express();
 
 export const restResponseTimeHistogram = new client.Histogram({
-  name: "rest_response_time_duration_seconds",
+  name: "js_rest_duration",
   help: "REST API response time in seconds",
   labelNames: ["method", "route", "status_code"],
 });
