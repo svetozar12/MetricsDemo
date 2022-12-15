@@ -6,18 +6,22 @@ const books: { title: string; author: string }[] = [];
 route.get("/", (req, res) => {
   res.send("Hello from expres");
 });
-
-route.get("/book", (req, res) => {
-  return res.json(books);
+route.get("/first", (req, res) => {
+  return res.send("hi");
 });
-
-route.post("/book", (req, res) => {
-  const body = {
-    title: req.body.title,
-    author: req.body.author,
-  };
-  books.push(body);
-  return res.json({ book: body });
+route.get("/second", (req, res) => {
+  return res.send("hi");
 });
-
+route.get("/third", (req, res) => {
+  return res.send("hi");
+});
+route.get("/fourth", (req, res) => {
+  return res.send("hi");
+});
+route.get("/fifth", (req, res) => {
+  return res.send("hi");
+});
+route.get("/sixth", (req, res) => {
+  return res.send("hi");
+});
 export default route;
