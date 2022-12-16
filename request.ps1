@@ -7,6 +7,20 @@ for($i=1; $i -le 20; $i++){
 Invoke-WebRequest -Uri $url
 }
 for($i=1; $i -le 20; $i++){
-Invoke-WebRequest -Uri $url/book
+Invoke-WebRequest -Uri $url/first
 }
-
+for($i=1; $i -le 20; $i++){
+Invoke-WebRequest -Uri $url/second
+}
+for($i=1; $i -le 20; $i++){
+Invoke-WebRequest -Uri $url/third
+}
+for($i=1; $i -le 20; $i++){
+Invoke-WebRequest -Uri $url/fourth
+}
+for($i=1; $i -le 20; $i++){
+Invoke-WebRequest -Uri $url/fifth
+}
+for($i=1; $i -le 20; $i++){
+Invoke-WebRequest -Uri $url/sixth
+}
