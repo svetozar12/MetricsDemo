@@ -3,6 +3,7 @@ if(!$url) {
     echo "please pass some url"
     exit
     }
+for($j=1; $j -le 10; $i++){
 for($i=1; $i -le 2241; $i++){
 Invoke-WebRequest -Uri $url
 }
@@ -23,4 +24,4 @@ Invoke-WebRequest -Uri $url/fifth
 }
 for($i=1; $i -le 3647; $i++){
 Invoke-WebRequest -Uri $url/sixth
-}
+}}
