@@ -1,18 +1,29 @@
-import express, { Router } from "express";
-import client from "prom-client";
+import { Application, NextFunction, Request, Response } from "express";
+import { client, Index } from "./elastic";
 
-export const metrics = Router();
-export const restResponseTimeHistogram = new client.Histogram({
-  name: "gateway_metrics",
-  help: "REST API response time in seconds",
-  labelNames: ["method", "route", "status_code"],
-});
+const saveMetrics = async (req: Request, res: Response, next: NextFunction) => {
+  const reqObject = {
+    requestId: req.id,
+    method: req.method,
+    url: req.url,
+    host: req.hostname,
+    statusCode: res.statusCode,
+    userAgent: req.headers["user-agent"] || null,
+  };
+  console.log(req.route);
 
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics();
+  await client.update({
+    doc_as_upsert: true,
+    id: req.id,
+    index: Index,
+    doc: reqObject,
+  });
+  next();
+};
 
-metrics.get("/metrics", async (req, res) => {
-  res.set("Content-Type", client.register.contentType);
-
-  return res.send(await client.register.metrics());
-});
+export const metricsMiddleware = (app: Application) => {
+  app.use(saveMetrics, (req, res, next) => {
+    console.log(req.path, req.method, res.statusCode);
+    next();
+  });
+};
