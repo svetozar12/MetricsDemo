@@ -1,6 +1,7 @@
 "use strict";
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 // import { Request } from "express";
 
 // const getTargetOrganisationId = (
@@ -28,8 +29,31 @@ import { v4 as uuidv4 } from "uuid";
 
 //   return orgId;
 // };
-export const RequestId = (req: Request, res: Response, next: NextFunction) => {
+export const RequestId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const id = uuidv4();
   req.id = id;
   next();
+};
+
+export const forwardRequest = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  url: string,
+) => {
+  try {
+    // @ts-ignore
+    const response = await axios[req.method.toLocaleLowerCase()](
+      `${url}${req.path}`,
+    );
+    res.send(response.data);
+    next();
+  } catch (error) {
+    res.send(error);
+    next();
+  }
 };

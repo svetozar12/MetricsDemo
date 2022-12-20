@@ -1,12 +1,14 @@
 import express from "express";
-import proxy from "express-http-proxy";
 import cors from "cors";
+import { forwardRequest, RequestId } from "./utils";
+import { saveMetrics } from "./metrics";
 
 const app = express();
 app.use(cors());
-app.use("/netfield-api", proxy("https://api-development.netfield.io"));
-app.use("/api", proxy("http://localhost:5000"));
-app.use("/doc", proxy("https://restfulapi.net/"));
+app.use(RequestId);
+app.use(saveMetrics, (req, res, next) =>
+  forwardRequest(req, res, next, "https://api-development.netfield.io"),
+);
 declare global {
   namespace Express {
     interface Request {
@@ -14,5 +16,5 @@ declare global {
     }
   }
 }
+
 app.listen(3000);
-// metricsMiddleware(app);
