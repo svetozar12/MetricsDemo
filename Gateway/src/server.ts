@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { forwardRequest, RequestId } from "./utils";
-import { saveMetrics } from "./metrics";
-
+import { saveMetrics } from "./middlewares/metrics";
+import "./middlewares/elastic";
 const forwardOptions = [
   {
     proxyPath: "/netfield-api",
@@ -25,8 +25,7 @@ app.use(express.json());
 app.use(RequestId);
 forwardOptions.forEach(({ proxyPath, target }) => {
   console.log(`Proxy created at ${proxyPath} for > ${target}`);
-
-  app.use(proxyPath, (req, res, next) =>
+  app.use(proxyPath, saveMetrics, (req, res, next) =>
     forwardRequest(req, res, next, target),
   );
 });
