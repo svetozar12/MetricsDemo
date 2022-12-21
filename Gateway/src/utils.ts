@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import axios, { AxiosError } from "axios";
 import circularJSON from "circular-json";
+import fetch from "node-fetch";
 // import { Request } from "express";
 
 // const getTargetOrganisationId = (
@@ -47,19 +48,16 @@ export const forwardRequest = async (
   url: string,
 ) => {
   try {
-    // @ts-ignore
-    const response = await axios[req.method.toLocaleLowerCase()](
-      `${url}${req.path}`,
-    );
-    console.log(res.statusCode);
+    const targetUrl = `${url}${req.path}`;
 
-    const json = circularJSON.stringify(response);
-    return res.send(json).status(res.statusCode);
-  } catch (error) {
-    console.log(error);
-    const json = circularJSON.stringify(error);
-
-    return res.send(json).status(res.statusCode);
+    const response = await axios({
+      url: targetUrl,
+      method: req.method.toLocaleLowerCase(),
+      data: { ...req.body },
+    });
+    return res.send(response.data);
+  } catch (error: any) {
+    return res.send(error.response.data).status(res.statusCode);
   } finally {
     next();
   }

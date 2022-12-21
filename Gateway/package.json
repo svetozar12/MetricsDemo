@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "yarn build",
     "start": "node dist/server.js",
+    "watch": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "yarn && tsc"
   },
   "keywords": [],
@@ -26,6 +27,7 @@
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^2.0.6",
     "morgan": "^1.10.0",
+    "node-fetch": "2",
     "prom-client": "^14.1.0",
     "response-time": "^2.3.2",
     "typescript": "^4.9.4",
@@ -35,6 +37,8 @@
     "@types/circular-json": "^0.4.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
-    "@types/uuid": "^9.0.0"
+    "@types/node-fetch": "^2.6.2",
+    "@types/uuid": "^9.0.0",
+    "ts-node-dev": "^2.0.0"
   }
 }

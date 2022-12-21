@@ -24,7 +24,7 @@ app.use(RequestId);
 forwardOptions.forEach(({ proxyPath, target }) => {
   console.log(`Proxy created at ${proxyPath} for > ${target}`);
 
-  app.use(proxyPath, saveMetrics, (req, res, next) =>
+  app.use(proxyPath, (req, res, next) =>
     forwardRequest(req, res, next, target),
   );
 });
