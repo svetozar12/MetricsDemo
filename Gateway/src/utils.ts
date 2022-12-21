@@ -2,8 +2,6 @@
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
 import axios, { AxiosError } from "axios";
-import circularJSON from "circular-json";
-import fetch from "node-fetch";
 // import { Request } from "express";
 
 // const getTargetOrganisationId = (
@@ -50,14 +48,25 @@ export const forwardRequest = async (
   try {
     const targetUrl = `${url}${req.path}`;
 
+    // causing some problems (it will still be there but we wont send it to the service)
+    delete req.headers["content-length"];
+
     const response = await axios({
       url: targetUrl,
       method: req.method.toLocaleLowerCase(),
       data: { ...req.body },
+      headers: req.headers,
     });
-    return res.send(response.data);
+
+    return res
+      .status(response.status)
+      .header(response.headers)
+      .send(response.data);
   } catch (error: any) {
-    return res.send(error.response.data).status(res.statusCode);
+    return res
+      .status(error.response.status)
+      .header(error.response.headers)
+      .send(error.response.data);
   } finally {
     next();
   }

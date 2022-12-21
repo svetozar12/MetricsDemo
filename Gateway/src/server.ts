@@ -6,7 +6,7 @@ import { saveMetrics } from "./metrics";
 const forwardOptions = [
   {
     proxyPath: "/netfield-api",
-    target: "https://api-development.netfield.io",
+    target: "http://localhost:5005",
   },
   {
     proxyPath: "/api1",
@@ -20,6 +20,8 @@ const forwardOptions = [
 
 const app = express();
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(RequestId);
 forwardOptions.forEach(({ proxyPath, target }) => {
   console.log(`Proxy created at ${proxyPath} for > ${target}`);
