@@ -1,0 +1,23 @@
+version: "3.1"
+services:
+  service1:
+    container_name: service1
+    build:
+      context: ./service1
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+  service2:
+    container_name: service2
+    build:
+      context: ./service2
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+  metric_service:
+    container_name: metric_service
+    build:
+      context: ./Gateway
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"

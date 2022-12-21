@@ -1,7 +1,8 @@
 "use strict";
 import { Request, Response, NextFunction } from "express";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import circularJSON from "circular-json";
 // import { Request } from "express";
 
 // const getTargetOrganisationId = (
@@ -50,10 +51,16 @@ export const forwardRequest = async (
     const response = await axios[req.method.toLocaleLowerCase()](
       `${url}${req.path}`,
     );
-    res.send(response.data);
-    next();
+    console.log(res.statusCode);
+
+    const json = circularJSON.stringify(response);
+    return res.send(json).status(res.statusCode);
   } catch (error) {
-    res.send(error);
+    console.log(error);
+    const json = circularJSON.stringify(error);
+
+    return res.send(json).status(res.statusCode);
+  } finally {
     next();
   }
 };

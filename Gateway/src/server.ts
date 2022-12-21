@@ -3,12 +3,32 @@ import cors from "cors";
 import { forwardRequest, RequestId } from "./utils";
 import { saveMetrics } from "./metrics";
 
+const forwardOptions = [
+  {
+    proxyPath: "/netfield-api",
+    target: "https://api-development.netfield.io",
+  },
+  {
+    proxyPath: "/api1",
+    target: "http://localhost:5000",
+  },
+  {
+    proxyPath: "/api2",
+    target: "http://localhost:5001",
+  },
+];
+
 const app = express();
 app.use(cors());
 app.use(RequestId);
-app.use(saveMetrics, (req, res, next) =>
-  forwardRequest(req, res, next, "https://api-development.netfield.io"),
-);
+forwardOptions.forEach(({ proxyPath, target }) => {
+  console.log(`Proxy created at ${proxyPath} for > ${target}`);
+
+  app.use(proxyPath, saveMetrics, (req, res, next) =>
+    forwardRequest(req, res, next, target),
+  );
+});
+
 declare global {
   namespace Express {
     interface Request {
@@ -17,4 +37,6 @@ declare global {
   }
 }
 
-app.listen(3000);
+app.listen(4000, () =>
+  console.log("server is listening on http://localhost:4000"),
+);

@@ -15,7 +15,6 @@ export const saveMetrics = async (
       statusCode: res.statusCode,
       userAgent: req.headers["user-agent"] || null,
     };
-    console.log(res.statusCode);
 
     await client.update({
       doc_as_upsert: true,
@@ -24,7 +23,7 @@ export const saveMetrics = async (
       doc: reqObject,
     });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
   } finally {
     next();
   }
