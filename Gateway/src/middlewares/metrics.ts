@@ -26,9 +26,11 @@ export const saveMetrics = async (
       }
       requestHeadersSize += "\r\n".length;
     }
+    const responseHeadersSize = req.resSuccess.headers["content-length"];
 
     const reqObject = {
       requestId: req.id,
+      // targetOrganisationId would be gotten from auth service
       targetOrganisationId: null,
       startTime: req.start,
       endTime: req.end,
@@ -40,15 +42,17 @@ export const saveMetrics = async (
       credentials: null,
       params: req.params || {},
       query: req.query || {},
-      requestPayload: {},
+      requestPayload: req.body || {},
       responsePayload: req.resSuccess.data ? req.resSuccess.data : {},
       requestBodySize:
         parseInt(req.headers["content-length"] as string, 10) || 0,
       requestHeadersSize,
       responseBodySize: !!req.resSuccess.data ? req.resSuccess.data.length : 0,
-      responseHeadersSize: null,
+      responseHeadersSize: responseHeadersSize || 0,
       host: req.hostname,
+      // these metrics are happi specific
       resource: null,
+      // these metrics are happi specific
       action: null,
       userAgent: req.headers["user-agent"] || null,
     };
