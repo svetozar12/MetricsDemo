@@ -3,6 +3,8 @@ import cors from "cors";
 import { forwardRequest, RequestId } from "./utils";
 import { saveMetrics } from "./middlewares/metrics";
 import "./middlewares/elastic";
+import { AxiosError, AxiosResponse } from "axios";
+
 const forwardOptions = [
   {
     proxyPath: "/netfield-api",
@@ -23,17 +25,32 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(RequestId);
+app.use(function (req, res, next) {
+  req.start = Date.now();
+  next();
+});
 forwardOptions.forEach(({ proxyPath, target }) => {
   console.log(`Proxy created at ${proxyPath} for > ${target}`);
-  app.use(proxyPath, saveMetrics, (req, res, next) =>
-    forwardRequest(req, res, next, target),
-  );
+  app.use(proxyPath, (req, res, next) => {
+    forwardRequest(req, res, next, target);
+  });
+  app.use((req, res, next) => {
+    req.end = Date.now();
+    req.duration = Date.now() - req.start;
+    next();
+  });
+  app.use(saveMetrics);
 });
 
 declare global {
   namespace Express {
     interface Request {
       id: string;
+      start: number;
+      end: number;
+      duration: number;
+      resSuccess: AxiosResponse<any, any>;
+      resFailure: AxiosError<any, any>;
     }
   }
 }

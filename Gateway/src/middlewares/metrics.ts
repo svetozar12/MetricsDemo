@@ -2,15 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { client, Index } from "./elastic";
 // const requestData: IRequestData = {
 //   targetOrganisationId: this.getTargetOrganisationId(req),
-//   startTime: request.info.received,
-//   endTime: request.info.completed,
-//   duration: request.info.completed - request.info.received,
 //   credentials: request.auth.credentials || {},
-//   params: req.params || {},
-//   query: request.query || {},
-//   requestPayload: request.payload || {},
 //   responsePayload: _payload._data ? JSON.parse(_payload._data) : {},
-//   requestHeadersSize,
 //   responseBodySize: _payload._data ? _payload._data.length : 0,
 //   responseHeadersSize: res._header.length,
 //   resource: request.route.settings.notes ? request.route.settings.notes[0] : null,
@@ -21,7 +14,6 @@ export const saveMetrics = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log("ciganior", req);
   try {
     let requestHeadersSize = 0;
     requestHeadersSize += `${req.method} ${req.url} HTTP/${req.httpVersion}\r\n`
@@ -34,24 +26,26 @@ export const saveMetrics = async (
       }
       requestHeadersSize += "\r\n".length;
     }
+
     const reqObject = {
       requestId: req.id,
       targetOrganisationId: null,
-      startTime: null,
-      endTime: null,
-      duration: null,
+      startTime: req.start,
+      endTime: req.end,
+      duration: req.duration,
       method: req.method,
       url: req.path,
       statusCode: res.statusCode,
       // credentials would be gotten from auth service
       credentials: null,
-      params: req.params,
-      query: req.query,
-      requestPayload: req.body ? req.body : {},
-      requestHeadersSize,
+      params: req.params || {},
+      query: req.query || {},
+      requestPayload: {},
+      responsePayload: req.resSuccess.data ? req.resSuccess.data : {},
       requestBodySize:
         parseInt(req.headers["content-length"] as string, 10) || 0,
-      responseBodySize: null,
+      requestHeadersSize,
+      responseBodySize: !!req.resSuccess.data ? req.resSuccess.data.length : 0,
       responseHeadersSize: null,
       host: req.hostname,
       resource: null,
