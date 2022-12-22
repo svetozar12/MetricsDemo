@@ -37,6 +37,7 @@ export const forwardRequest = async (
       .header(response.headers)
       .send(response.data);
   } catch (error) {
+    console.log(error.message);
     if (isAxiosError(error) && error.response) {
       req.resFailure = error;
       return res

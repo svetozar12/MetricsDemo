@@ -1,14 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { client, Index } from "./elastic";
-// const requestData: IRequestData = {
-//   targetOrganisationId: this.getTargetOrganisationId(req),
-//   credentials: request.auth.credentials || {},
-//   responsePayload: _payload._data ? JSON.parse(_payload._data) : {},
-//   responseBodySize: _payload._data ? _payload._data.length : 0,
-//   responseHeadersSize: res._header.length,
-//   resource: request.route.settings.notes ? request.route.settings.notes[0] : null,
-//   action: request.route.settings.notes ? request.route.settings.notes[1] : null,
-// };
+
 export const saveMetrics = async (
   req: Request,
   res: Response,
@@ -26,7 +18,7 @@ export const saveMetrics = async (
       }
       requestHeadersSize += "\r\n".length;
     }
-    const responseHeadersSize = req.resSuccess.headers["content-length"];
+    const responseHeadersSize = 0;
 
     const reqObject = {
       requestId: req.id,
@@ -43,11 +35,11 @@ export const saveMetrics = async (
       params: req.params || {},
       query: req.query || {},
       requestPayload: req.body || {},
-      responsePayload: req.resSuccess.data ? req.resSuccess.data : {},
+      responsePayload: !!req.resSuccess ? req.resSuccess.data : {},
       requestBodySize:
         parseInt(req.headers["content-length"] as string, 10) || 0,
       requestHeadersSize,
-      responseBodySize: !!req.resSuccess.data ? req.resSuccess.data.length : 0,
+      responseBodySize: !!req.resSuccess ? req.resSuccess.data.length : 0,
       responseHeadersSize: responseHeadersSize || 0,
       host: req.hostname,
       // these metrics are happi specific
