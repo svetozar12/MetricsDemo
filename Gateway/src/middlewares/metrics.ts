@@ -18,7 +18,9 @@ export const saveMetrics = async (
       }
       requestHeadersSize += "\r\n".length;
     }
-    const responseHeadersSize = 0;
+    const responseHeadersSize = req.response
+      ? req.response.headers["content-length"]
+      : 0;
 
     const reqObject = {
       requestId: req.id,
@@ -35,11 +37,11 @@ export const saveMetrics = async (
       params: req.params || {},
       query: req.query || {},
       requestPayload: req.body || {},
-      responsePayload: !!req.resSuccess ? req.resSuccess.data : {},
+      responsePayload: !!req.response ? req.response.data : {},
       requestBodySize:
         parseInt(req.headers["content-length"] as string, 10) || 0,
       requestHeadersSize,
-      responseBodySize: !!req.resSuccess ? req.resSuccess.data.length : 0,
+      responseBodySize: !!req.response ? req.response.data.length : 0,
       responseHeadersSize: responseHeadersSize || 0,
       host: req.hostname,
       // these metrics are happi specific

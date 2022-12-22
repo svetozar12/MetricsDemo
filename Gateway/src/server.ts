@@ -8,7 +8,7 @@ import { AxiosError, AxiosResponse } from "axios";
 const forwardOptions = [
   {
     proxyPath: "/netfield-api",
-    target: "https://api-development.netfield.io",
+    target: "http://localhost:5005",
   },
   {
     proxyPath: "/api1",
@@ -49,8 +49,7 @@ declare global {
       start: number;
       end: number;
       duration: number;
-      resSuccess: AxiosResponse<any, any>;
-      resFailure: AxiosError<any, any>;
+      response: AxiosResponse<any, any>;
     }
   }
 }

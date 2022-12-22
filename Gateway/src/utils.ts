@@ -31,15 +31,14 @@ export const forwardRequest = async (
       data: { ...req.body },
       headers: req.headers,
     });
-    req.resSuccess = response;
+    req.response = response;
     return res
       .status(response.status)
       .header(response.headers)
       .send(response.data);
   } catch (error) {
-    console.log(error.message);
     if (isAxiosError(error) && error.response) {
-      req.resFailure = error;
+      req.response = error.response;
       return res
         .status(error.response.status)
         .header(error.response.headers)
